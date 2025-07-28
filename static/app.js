@@ -9,7 +9,18 @@ function t(key) {
 // Function to load translations from the API
 async function loadTranslations() {
     const params = new URLSearchParams(window.location.search);
-    const lang = params.get('lang') || 'zh'; // Default to Chinese
+    let lang = params.get('lang');
+    if (!lang) {
+        // 自动检测浏览器语言
+        const browserLang = (navigator.languages && navigator.languages[0]) || navigator.language || 'zh';
+        if (browserLang.startsWith('zh')) {
+            lang = 'zh';
+        } else if (browserLang.startsWith('ja')) {
+            lang = 'ja';
+        } else {
+            lang = 'en';
+        }
+    }
     try {
         const response = await fetch(getApiUrl(`api/i18n/${lang}`));
         if (!response.ok) {
@@ -270,6 +281,59 @@ function determineLoadBalancerTarget(db) {
     }
 }
 
+function adjustGridForFitScreen(totalCards) {
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight - 120; // 预留顶部标题和按钮高度
+    const minCardW = 240, minCardH = 150;
+    let maxCols = Math.floor(screenW / minCardW);
+    let maxRows = Math.floor(screenH / minCardH);
+    maxCols = Math.max(1, maxCols);
+    maxRows = Math.max(1, maxRows);
+    let cols = Math.min(totalCards, maxCols);
+    let rows = Math.ceil(totalCards / cols);
+    while (rows > maxRows && cols < totalCards) {
+        cols++;
+        rows = Math.ceil(totalCards / cols);
+    }
+    document.documentElement.style.setProperty('--db-grid-columns', cols);
+}
+
+function fitAllCards() {
+    const allCards = document.querySelectorAll('.db-card');
+    if (allCards.length > 0) {
+        adjustGridForFitScreen(allCards.length);
+    }
+}
+
+window.addEventListener('resize', fitAllCards);
+// --- Fullscreen Toggle ---
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+function updateFullscreenButton() {
+    if (document.fullscreenElement) {
+        domCache.fullscreenBtn.textContent = t('exitFullscreen');
+    } else {
+        domCache.fullscreenBtn.textContent = t('fullscreen');
+    }
+}
+
+window.addEventListener('resize', fitAllCards);
+document.addEventListener('fullscreenchange', () => {
+    fitAllCards();
+    updateFullscreenButton();
+});
+window.addEventListener('DOMContentLoaded', fitAllCards);
+
 // 初始化
 async function init() {
     // Cache DOM elements
@@ -282,7 +346,8 @@ async function init() {
     domCache.lbIpLabel = document.querySelector('[data-i18n="lbIpLabel"]');
     domCache.currentTime = document.getElementById('current-time');
     domCache.lbSystemList = document.getElementById('lb-system-list');
-    domCache.dashboardContainer = document.querySelector('.dashboard');
+        domCache.dashboardContainer = document.querySelector('.dashboard');
+    domCache.fullscreenBtn = document.getElementById('fullscreen-btn');
 
     await loadTranslations(); // Load translations first
 
@@ -293,6 +358,12 @@ async function init() {
     setInterval(updateCurrentTime, 1000);
 
     fetchAndRenderData();
+
+    // Add fullscreen button listener
+    if (domCache.fullscreenBtn) {
+        domCache.fullscreenBtn.addEventListener('click', toggleFullScreen);
+        updateFullscreenButton(); // Set initial text
+    }
 
     let refreshTimer;
     function setDynamicRefresh() {

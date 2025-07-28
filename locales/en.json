@@ -28,5 +28,9 @@
   "Warning": "Warning",
   "targetProd": "Production",
   "targetDR": "DR",
-  "targetOffline": "Offline"
+    "targetOffline": "Offline",
+  "fullscreen": "Fullscreen",
+  "exitFullscreen": "Exit Fullscreen",
+  "fullscreen": "Fullscreen",
+  "exitFullscreen": "Exit Fullscreen"
 }

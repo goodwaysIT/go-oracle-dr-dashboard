@@ -28,5 +28,7 @@
   "Warning": "警告",
   "targetProd": "生产",
   "targetDR": "容灾",
-  "targetOffline": "离线"
+    "targetOffline": "离线",
+  "fullscreen": "全屏",
+  "exitFullscreen": "退出全屏"
 }

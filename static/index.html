@@ -24,14 +24,17 @@
                 <div id="prod-dc-title" class="datacenter-title"></div>
                 <div class="database-grid" id="production-container"></div>
             </div>
-            
-            <!-- 负载均衡器 -->
-            <div class="floating-lb" id="load-balancer-container">
-                <div class="lb-title" data-i18n="loadBalancer">负载均衡器</div>
-                <div id="lb-ip" class="lb-ip"><span data-i18n="lbIpLabel">IP</span>: <span data-i18n-target="lb-ip-value">加载中...</span></div>
-                <div class="lb-systems" id="lb-system-list"></div>
+            <!-- 中间栏：全屏按钮+负载均衡器 -->
+            <div class="center-bar">
+                <div class="fullscreen-btn-bar">
+                    <button id="fullscreen-btn">全屏</button>
+                </div>
+                <div class="floating-lb" id="load-balancer-container">
+                    <div class="lb-title" data-i18n="loadBalancer">负载均衡器</div>
+                    <div id="lb-ip" class="lb-ip"><span data-i18n="lbIpLabel">IP</span>: <span data-i18n-target="lb-ip-value">加载中...</span></div>
+                    <div class="lb-systems" id="lb-system-list"></div>
+                </div>
             </div>
-            
             <!-- 容灾数据中心 -->
             <div class="datacenter disaster">
                 <div id="dr-dc-title" class="datacenter-title"></div>

@@ -382,3 +382,34 @@ body {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+.center-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0 0 260px; /* 固定宽度，和负载均衡器一致 */
+    min-width: 200px;
+    max-width: 320px;
+}
+.fullscreen-btn-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#fullscreen-btn {
+    padding: 6px 16px;
+    background: #1890ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(24,144,255,0.15);
+    transition: background 0.2s;
+}
+#fullscreen-btn:hover {
+    background: #40a9ff;
+}
