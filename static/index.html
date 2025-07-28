@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- BASE_HREF_PLACEHOLDER --> <!-- 使用这个占位符 -->
+    <title></title>
+    <!-- 引入外部CSS文件 -->
+    <link rel="stylesheet" href="static/style.css">
+        <!-- CONFIG_SCRIPT_PLACEHOLDER --> <!-- Add this placeholder -->
+        <!-- TITLES_SCRIPT_PLACEHOLDER -->
+        
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1 id="main-title-h1"></h1>
+            <div class="time" id="current-time"></div>
+        </div>
+        
+        <div class="datacenter-container">
+            <!-- 生产数据中心 -->
+            <div class="datacenter production">
+                <div id="prod-dc-title" class="datacenter-title"></div>
+                <div class="database-grid" id="production-container"></div>
+            </div>
+            
+            <!-- 负载均衡器 -->
+            <div class="floating-lb" id="load-balancer-container">
+                <div class="lb-title" data-i18n="loadBalancer">负载均衡器</div>
+                <div id="lb-ip" class="lb-ip"><span data-i18n="lbIpLabel">IP</span>: <span data-i18n-target="lb-ip-value">加载中...</span></div>
+                <div class="lb-systems" id="lb-system-list"></div>
+            </div>
+            
+            <!-- 容灾数据中心 -->
+            <div class="datacenter disaster">
+                <div id="dr-dc-title" class="datacenter-title"></div>
+                <div class="database-grid" id="disaster-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入外部JavaScript文件 -->
+    <script src="static/app.js"></script>
+
+    <!-- HTML Templates -->
+    <template id="db-card-template">
+        <div class="db-card">
+            <div class="db-name">
+                <span class="db-name-text"></span>
+                <div class="load-direction" style="display: none;"><span class="direction-icon">⟵</span> LB</div>
+            </div>
+            <div class="server-info">
+                <div class="ip-address">
+                    <strong>IP:</strong> <span class="ip"></span>
+                </div>
+            </div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-icon ping-status" title="Ping"></span>
+                    <span class="status-icon port-status" title="1521 Port"></span>
+                    <span class="status-icon db-connect-status" title="DB Connectivity"></span>
+                </div>
+                <div class="status-item overall-status-item">
+                    <span class="status-icon overall-status"></span>
+                    <span class="overall-status-text"></span>
+                </div>
+                <div class="status-item role-item">
+                    ${t('roleLabel')}: <span class="role-text"></span>
+                </div>
+                <div class="status-item delay-item"></div>
+            </div>
+            <div class="data-flow-indicator" style="display: none;">
+                <div class="flow-line"></div>
+                <div class="flow-pulse"></div>
+                <div class="connections-count"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="lb-item-template">
+        <div class="lb-system">
+            <span class="lb-name"></span>
+            <span class="lb-status">
+                <span class="status-icon ping-status" title="Ping"></span>
+                <span class="status-icon port-status" title="1521 Port"></span>
+                <span class="status-icon db-connect-status" title="DB Connectivity"></span>
+                <span class="lb-target-env"></span>
+            </span>
+            <span class="lb-status">
+                <small>IP: <span class="lb-ip-text"></span></small>
+            </span>
+        </div>
+    </template>
+
+</body>
+</html>

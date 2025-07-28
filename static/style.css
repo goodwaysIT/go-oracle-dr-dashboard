@@ -1,0 +1,384 @@
+:root {
+    --primary-color: #1890ff;
+    --success-color: #52c41a;
+    --warning-color: #faad14;
+    --error-color: #f5222d;
+    --bg-color: #001529;
+    --card-bg: rgba(15, 40, 75, 0.85);
+    --prod-bg: rgba(24, 77, 135, 0.6);
+    --dr-bg: rgba(135, 52, 24, 0.4);
+    --text-color: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    background-image: radial-gradient(circle at 50% 50%, rgba(30, 60, 110, 0.3), rgba(0, 21, 41, 0.9));
+    height: 100vh;
+    overflow: hidden;
+}
+
+.dashboard {
+    padding: 10px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    text-align: center;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(24, 144, 255, 0.5);
+    letter-spacing: 2px;
+}
+
+.time {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+}
+
+.datacenter-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 20px; /* 减小间距，让flexbox自动处理布局 */
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.datacenter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    position: relative;
+}
+
+.datacenter-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.production {
+    background: linear-gradient(180deg, rgba(24, 77, 135, 0.3) 0%, rgba(24, 77, 135, 0) 100%);
+}
+
+.production .datacenter-title {
+    background-color: var(--prod-bg);
+    color: #ffffff;
+    border: 1px solid rgba(24, 144, 255, 0.3);
+}
+
+.disaster {
+    background: linear-gradient(180deg, rgba(135, 52, 24, 0.3) 0%, rgba(135, 52, 24, 0) 100%);
+}
+
+.disaster .datacenter-title {
+    background-color: var(--dr-bg);
+    color: #ffffff;
+    border: 1px solid rgba(230, 100, 60, 0.3);
+}
+
+.database-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--db-grid-columns, 2), 1fr); /* Default to 2 columns if var is not set */
+    gap: 10px;
+    padding: 5px;
+    flex: 1;
+}
+
+.db-card {
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    font-size: 12px;
+    position: relative;
+}
+
+.db-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(24, 144, 255, 0.3);
+    z-index: 10;
+}
+
+.db-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.server-info {
+    margin-bottom: 8px;
+}
+
+.ip-address {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    font-size: 11px;
+}
+
+.ip {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1px 3px;
+    border-radius: 3px;
+    margin-left: 3px;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+}
+
+.status-item {
+    font-size: 11px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.status-grid-full {
+    grid-column: span 2;
+}
+
+.status-icon {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 3px;
+    flex-shrink: 0;
+}
+
+.status-online {
+    background-color: var(--success-color);
+    box-shadow: 0 0 5px var(--success-color);
+}
+
+.status-offline {
+    background-color: var(--error-color);
+    box-shadow: 0 0 5px var(--error-color);
+}
+
+.status-warning {
+    background-color: var(--warning-color);
+    box-shadow: 0 0 5px var(--warning-color);
+}
+
+.load-direction {
+    background-color: rgba(24, 144, 255, 0.2);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.direction-icon {
+    margin-right: 2px;
+    font-weight: bold;
+}
+
+.data-flow-indicator {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    position: relative;
+    height: 22px;
+}
+
+.flow-line {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary-color), #00c1de);
+}
+
+.flow-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(24, 144, 255, 0.6);
+    animation: pulse 1.5s infinite;
+    left: 0;
+    top: 5px;
+}
+
+.connections-count {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 10px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+        left: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+        left: 100%;
+    }
+}
+
+.floating-lb {
+    /* 移除绝对定位，使其成为flex布局的一部分 */
+    /* position: absolute; */
+    /* top: 50%; */
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    
+    flex-shrink: 0; /* 防止在空间不足时被压缩 */
+    margin-top: 45px; /* 增加上边距，使其与两侧的标题大致对齐 */
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 15px;
+    font-size: 12px;
+    width: 180px; /* 可以适当加宽 */
+    box-shadow: 0 0 20px rgba(24, 144, 255, 0.3);
+}
+
+.lb-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.lb-ip {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+.lb-systems {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    padding-right: 3px;
+    overflow: visible;
+    height: auto;
+}
+
+.lb-system {
+    padding: 3px 5px;
+    background-color: rgba(24, 144, 255, 0.2);
+    border-radius: 3px;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.lb-status {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 2px;
+    font-size: 9px;
+}
+
+/* --- 宽屏布局样式 --- */
+.dashboard.wide-layout .datacenter-container {
+    gap: 20px; /* 减小数据中心之间的间距 */
+}
+
+.dashboard.wide-layout .database-grid {
+    --db-grid-columns: 3; /* 在宽屏模式下显示3列 */
+}
+
+.dashboard.wide-layout .floating-lb {
+    width: 200px; /* 增加负载均衡器的宽度 */
+}
+
+.dashboard.wide-layout .lb-systems {
+    grid-template-columns: repeat(2, 1fr); /* 负载均衡器内部也调整布局 */
+}
+
+/* 负载均衡器滚动条样式 */
+.lb-systems::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lb-systems::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.lb-systems::-webkit-scrollbar-thumb {
+    background: rgba(24, 144, 255, 0.6);
+    border-radius: 2px;
+}
+
+/* 响应式布局 */
+@media (max-width: 1200px) {
+    .datacenter-container {
+        flex-direction: column;
+        gap: 80px;
+    }
+    
+    .floating-lb {
+        position: relative;
+        transform: none;
+        left: 0;
+        margin: 10px auto;
+        width: 80%;
+        max-width: 300px;
+    }
+    
+    .lb-systems {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
