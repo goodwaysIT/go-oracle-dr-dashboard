@@ -132,7 +132,7 @@ func Run(staticFS, localeFS fs.FS) {
 	router.GET("/api/i18n/:lang", func(c *gin.Context) {
 		lang := c.Param("lang")
 		// Basic validation to prevent path traversal
-		if lang != "en" && lang != "zh" {
+		if lang != "en" && lang != "zh" && lang != "ja" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Language not supported"})
 			return
 		}

@@ -27,10 +27,12 @@ body {
 }
 
 .dashboard {
-    padding: 10px;
+    width: 100vw;
+    max-width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    /* padding: 10px;  // 可去掉或缩小 */
 }
 
 .header {
@@ -58,15 +60,17 @@ body {
 
 .datacenter-container {
     display: flex;
+    width: 100%;
     flex: 1;
-    overflow: hidden;
-    gap: 20px; /* 减小间距，让flexbox自动处理布局 */
-    align-items: flex-start;
-    justify-content: center;
+    gap: 32px; /* 适当调整间距 */
+    align-items: stretch;
+    justify-content: stretch;
+    box-sizing: border-box;
 }
 
 .datacenter {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     padding: 5px;
@@ -104,7 +108,7 @@ body {
 
 .database-grid {
     display: grid;
-    grid-template-columns: repeat(var(--db-grid-columns, 2), 1fr); /* Default to 2 columns if var is not set */
+    grid-template-columns: repeat(var(--db-grid-columns, 3), 1fr);
     gap: 10px;
     padding: 5px;
     flex: 1;
@@ -270,21 +274,17 @@ body {
 }
 
 .floating-lb {
-    /* 移除绝对定位，使其成为flex布局的一部分 */
-    /* position: absolute; */
-    /* top: 50%; */
-    /* left: 50%; */
-    /* transform: translate(-50%, -50%); */
-    
-    flex-shrink: 0; /* 防止在空间不足时被压缩 */
-    margin-top: 45px; /* 增加上边距，使其与两侧的标题大致对齐 */
+    flex: 0 0 260px; /* 固定宽度，适当调整 */
+    margin-top: 45px;
     background-color: rgba(0, 0, 0, 0.7);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 15px;
     font-size: 12px;
-    width: 180px; /* 可以适当加宽 */
     box-shadow: 0 0 20px rgba(24, 144, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lb-title {
