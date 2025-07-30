@@ -24,21 +24,21 @@ func GetConfig() Config {
 func LoadConfig(configFile string) error {
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		return fmt.Errorf("读取配置文件失败: %v", err)
+		return fmt.Errorf("failed to read config file: %v", err)
 	}
 
 	var newConfig Config
 	err = yaml.Unmarshal(data, &newConfig)
 	if err != nil {
-		return fmt.Errorf("解析配置文件失败: %v", err)
+		return fmt.Errorf("failed to parse config file: %v", err)
 	}
 
 	// Set default values
 	if newConfig.Server.RefreshInterval <= 0 {
-		newConfig.Server.RefreshInterval = 30 // 默认30秒刷新一次
+		newConfig.Server.RefreshInterval = 30 // Default to 30 seconds refresh
 	}
 	if newConfig.Frontend.DefaultIntervalMs <= 0 {
-		newConfig.Frontend.DefaultIntervalMs = 600000 // 默认10分钟
+		newConfig.Frontend.DefaultIntervalMs = 600000 // Default to 10 minutes
 	}
 
 	configLock.Lock()
@@ -49,7 +49,7 @@ func LoadConfig(configFile string) error {
 }
 
 
-// 配置结构
+// Config defines the overall application configuration structure.
 type Config struct {
 	Server   ServerConfig     `yaml:"server"`
 	Logging  LoggingConfig    `yaml:"logging"`
@@ -59,7 +59,7 @@ type Config struct {
 	Frontend FrontendSettings `yaml:"frontend"`
 }
 
-// Layout配置
+// LayoutConfig defines layout settings like the number of columns.
 type LayoutConfig struct {
 	Columns int `yaml:"columns" json:"columns"`
 }
@@ -78,22 +78,22 @@ type FrontendSettings struct {
 	DefaultIntervalMs int           `yaml:"default_interval_ms" json:"default_interval_ms"`
 }
 
-// UI 标题配置
+// TitlesConfig holds the titles for the UI.
 type TitlesConfig struct {
 	MainTitle      string `yaml:"main_title" json:"main_title"`
 	ProdDataCenter string `yaml:"prod_data_center" json:"prod_data_center"`
 	DRDataCenter   string `yaml:"dr_data_center" json:"dr_data_center"`
 }
 
-// 服务器配置
+// ServerConfig holds server-related settings.
 type ServerConfig struct {
 	Port            string `yaml:"port"`
 	StaticDir       string `yaml:"static_dir"`
 	RefreshInterval int    `yaml:"refresh_interval"`
-	PublicBasePath  string `yaml:"public_base_path"` // 新增字段
+	PublicBasePath  string `yaml:"public_base_path"` // Public base path for reverse proxy setups
 }
 
-// 日志配置
+// LoggingConfig holds logging settings.
 type LoggingConfig struct {
 	Level      string `yaml:"level"`
 	Filename   string `yaml:"filename"`
@@ -102,7 +102,7 @@ type LoggingConfig struct {
 	MaxAge     int    `yaml:"max_age_days"`
 }
 
-// 数据库配置
+// DatabaseConfig holds the configuration for a single database to monitor.
 type DatabaseConfig struct {
 	Name        string `yaml:"name"`
 	LBIP        string `yaml:"lb_ip"`

@@ -38,7 +38,7 @@ func i18nMiddleware(bundle *i18n.Bundle) gin.HandlerFunc {
 func watchConfig(configFile string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		util.Logger.Fatalf("创建文件监视器失败: %v", err)
+		util.Logger.Fatalf("Failed to create file watcher: %v", err)
 	}
 	defer watcher.Close()
 
@@ -50,25 +50,25 @@ func watchConfig(configFile string) {
 					return
 				}
 				if event.Has(fsnotify.Write) {
-					util.Logger.Println("检测到配置文件变更，正在重新加载...")
+					util.Logger.Println("Configuration file change detected, reloading...")
 					if err := models.LoadConfig(configFile); err != nil {
-						util.Logger.Printf("热加载配置文件失败: %v", err)
+						util.Logger.Printf("Failed to hot-reload config file: %v", err)
 					} else {
-						util.Logger.Println("配置文件热加载成功。")
+						util.Logger.Println("Configuration file hot-reloaded successfully.")
 					}
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
 				}
-				util.Logger.Printf("文件监视器错误: %v", err)
+				util.Logger.Printf("File watcher error: %v", err)
 			}
 		}
 	}()
 
 	err = watcher.Add(configFile)
 	if err != nil {
-		util.Logger.Fatalf("添加文件到监视器失败: %v", err)
+		util.Logger.Fatalf("Failed to add file to watcher: %v", err)
 	}
 
 	// Block forever
@@ -80,11 +80,11 @@ func Run(staticFS, localeFS fs.FS) {
 	// ... (initConfig, initLogger) ...
 	err := models.LoadConfig(configFile)
 	if err != nil {
-		log.Fatalf("初始化配置失败: %v", err)
+		log.Fatalf("Failed to initialize configuration: %v", err)
 	}
 	err = util.InitLogger(models.GetConfig().Logging)
 	if err != nil {
-		log.Fatalf("初始化日志失败: %v", err)
+		log.Fatalf("Failed to initialize logger: %v", err)
 	}
 
 	go watchConfig(configFile)
@@ -92,12 +92,12 @@ func Run(staticFS, localeFS fs.FS) {
 	// --- Pre-read and cache index.html ---
 	file, err := staticFS.Open("index.html")
 	if err != nil {
-		util.Logger.Fatalf("无法打开嵌入的 index.html: %v", err)
+		util.Logger.Fatalf("Failed to open embedded index.html: %v", err)
 	}
 	indexHTMLContent, err = io.ReadAll(file)
 	file.Close()
 	if err != nil {
-		util.Logger.Fatalf("无法读取嵌入的 index.html: %v", err)
+		util.Logger.Fatalf("Failed to read embedded index.html: %v", err)
 	}
 	info, err := fs.Stat(staticFS, "index.html")
 	if err == nil {
@@ -107,7 +107,7 @@ func Run(staticFS, localeFS fs.FS) {
 	}
 
 	// --- i18n Setup ---
-	bundle := i18n.NewBundle(language.Chinese) // Set Chinese as the default language
+	bundle := i18n.NewBundle(language.English) // Set English as the default language
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
 	// Load translation files directly from the embedded filesystem.
@@ -121,7 +121,7 @@ func Run(staticFS, localeFS fs.FS) {
 		util.Logger.Fatalf("failed to load zh.json: %v", err)
 	}
 
-	util.Logger.Println("服务开始启动...")
+	util.Logger.Println("Starting server...")
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
@@ -237,15 +237,15 @@ func Run(staticFS, localeFS fs.FS) {
 	if port == "" {
 		port = "8080"
 	}
-	util.Logger.Printf("服务器已启动，监听端口：%s\n", port)
+	util.Logger.Printf("Server started, listening on port: %s\n", port)
 	currentConfig := models.GetConfig()
-	util.Logger.Printf("公共基础路径: %s\n", currentConfig.Server.PublicBasePath)
-	util.Logger.Printf("访问地址：http://localhost:%s%s\n", port, currentConfig.Server.PublicBasePath)
-	fmt.Printf("服务器已启动，监听端口：%s\n", port)
-	fmt.Printf("访问地址：http://localhost:%s%s\n", port, currentConfig.Server.PublicBasePath)
+	util.Logger.Printf("Public base path: %s\n", currentConfig.Server.PublicBasePath)
+	util.Logger.Printf("Access URL: http://localhost:%s%s\n", port, currentConfig.Server.PublicBasePath)
+	fmt.Printf("Server started, listening on port: %s\n", port)
+	fmt.Printf("Access URL: http://localhost:%s%s\n", port, currentConfig.Server.PublicBasePath)
 
 	err = router.Run(":" + port)
 	if err != nil {
-		util.Logger.Fatalf("服务器启动失败: %v", err)
+		util.Logger.Fatalf("Failed to start server: %v", err)
 	}
 } 

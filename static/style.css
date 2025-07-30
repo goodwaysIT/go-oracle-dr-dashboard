@@ -32,7 +32,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    /* padding: 10px;  // 可去掉或缩小 */
+    /* padding: 10px;  // Can be removed or reduced */
 }
 
 .header {
@@ -62,7 +62,7 @@ body {
     display: flex;
     width: 100%;
     flex: 1;
-    gap: 32px; /* 适当调整间距 */
+    gap: 32px; /* Adjust gap as needed */
     align-items: stretch;
     justify-content: stretch;
     box-sizing: border-box;
@@ -274,7 +274,7 @@ body {
 }
 
 .floating-lb {
-    flex: 0 0 260px; /* 固定宽度，适当调整 */
+    flex: 0 0 260px; /* Fixed width, adjust as needed */
     margin-top: 45px;
     background-color: rgba(0, 0, 0, 0.7);
     border: 1px solid var(--border-color);
@@ -331,24 +331,24 @@ body {
     font-size: 9px;
 }
 
-/* --- 宽屏布局样式 --- */
+/* --- Wide Screen Layout Styles --- */
 .dashboard.wide-layout .datacenter-container {
-    gap: 20px; /* 减小数据中心之间的间距 */
+    gap: 20px; /* Reduce gap between data centers */
 }
 
 .dashboard.wide-layout .database-grid {
-    --db-grid-columns: 3; /* 在宽屏模式下显示3列 */
+    --db-grid-columns: 3; /* Display 3 columns in wide screen mode */
 }
 
 .dashboard.wide-layout .floating-lb {
-    width: 200px; /* 增加负载均衡器的宽度 */
+    width: 200px; /* Increase the width of the load balancer */
 }
 
 .dashboard.wide-layout .lb-systems {
-    grid-template-columns: repeat(2, 1fr); /* 负载均衡器内部也调整布局 */
+    grid-template-columns: repeat(2, 1fr); /* Adjust layout inside the load balancer as well */
 }
 
-/* 负载均衡器滚动条样式 */
+/* Load Balancer Scrollbar Styles */
 .lb-systems::-webkit-scrollbar {
     width: 4px;
 }
@@ -362,7 +362,7 @@ body {
     border-radius: 2px;
 }
 
-/* 响应式布局 */
+/* Responsive Layout */
 @media (max-width: 1200px) {
     .datacenter-container {
         flex-direction: column;
@@ -388,7 +388,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    flex: 0 0 260px; /* 固定宽度，和负载均衡器一致 */
+    flex: 0 0 260px; /* Fixed width, same as the load balancer */
     min-width: 200px;
     max-width: 320px;
 }

@@ -27,5 +27,7 @@
   "Warning": "警告",
   "targetProd": "本番",
   "targetDR": "DR",
-  "targetOffline": "オフライン"
+    "targetOffline": "オフライン",
+  "fullscreen": "全画面",
+  "exitFullscreen": "全画面を終了"
 } 

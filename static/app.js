@@ -11,7 +11,7 @@ async function loadTranslations() {
     const params = new URLSearchParams(window.location.search);
     let lang = params.get('lang');
     if (!lang) {
-        // 自动检测浏览器语言
+        // Auto-detect browser language
         const browserLang = (navigator.languages && navigator.languages[0]) || navigator.language || 'zh';
         if (browserLang.startsWith('zh')) {
             lang = 'zh';
@@ -99,7 +99,7 @@ function getApiUrl(endpoint) {
     return effectiveBasePath + cleanEndpoint;
 }
 
-// 格式化时间
+// Format time
 function formatTime(timestamp) {
     const date = new Date(timestamp * 1000);
     const year = date.getFullYear();
@@ -111,7 +111,7 @@ function formatTime(timestamp) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-// 更新实时时间
+// Update real-time clock
 function updateCurrentTime() {
     const now = new Date();
     const year = now.getFullYear();
@@ -132,7 +132,7 @@ function updateCurrentTime() {
     domCache.currentTime.textContent = formattedTime;
 }
 
-// 获取数据并渲染
+// Fetch data and render
 async function fetchAndRenderData() {
     try {
         const apiUrl = getApiUrl('api/data');
@@ -140,9 +140,9 @@ async function fetchAndRenderData() {
         const result = await response.json();
 
         if (result.code === 200) {
-            // --- 动态布局 ---
+            // --- Dynamic Layout ---
             const dbCount = result.data.length;
-            if (dbCount > 4) { // 当数据库超过4个时，应用宽屏布局
+            if (dbCount > 4) { // When there are more than 4 databases, apply wide-screen layout
                 domCache.dashboardContainer.classList.add('wide-layout');
             } else {
                 domCache.dashboardContainer.classList.remove('wide-layout');
@@ -283,7 +283,7 @@ function determineLoadBalancerTarget(db) {
 
 function adjustGridForFitScreen(totalCards) {
     const screenW = window.innerWidth;
-    const screenH = window.innerHeight - 120; // 预留顶部标题和按钮高度
+    const screenH = window.innerHeight - 120; // Reserve height for top title and buttons
     const minCardW = 240, minCardH = 150;
     let maxCols = Math.floor(screenW / minCardW);
     let maxRows = Math.floor(screenH / minCardH);
@@ -334,7 +334,7 @@ document.addEventListener('fullscreenchange', () => {
 });
 window.addEventListener('DOMContentLoaded', fitAllCards);
 
-// 初始化
+// Initialization
 async function init() {
     // Cache DOM elements
     domCache.mainTitleH1 = document.getElementById('main-title-h1');
