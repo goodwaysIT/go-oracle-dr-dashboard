@@ -76,8 +76,7 @@ func watchConfig(configFile string) {
 	<-make(chan struct{})
 }
 
-func Run(staticFS, localeFS fs.FS) {
-	configFile := "config.yaml"
+func Run(staticFS, localeFS fs.FS, configFile string) {
 	// ... (initConfig, initLogger) ...
 	err := models.LoadConfig(configFile)
 	if err != nil {
