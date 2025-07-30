@@ -1,6 +1,9 @@
 // --- Global Cache ---
 const domCache = {};
 
+// Helper function to get language from URL, defaulting to 'zh'
+const getLang = () => new URLSearchParams(window.location.search).get('lang') || 'zh';
+
 // Helper function for translation with fallback
 function t(key) {
     return (window.I18N && window.I18N[key]) || key; // Fallback to the key itself if not found
@@ -8,8 +11,7 @@ function t(key) {
 
 // Function to load translations from the API
 async function loadTranslations() {
-    const params = new URLSearchParams(window.location.search);
-    let lang = params.get('lang');
+    const lang = getLang();
     if (!lang) {
         // Auto-detect browser language
         const browserLang = (navigator.languages && navigator.languages[0]) || navigator.language || 'zh';
@@ -113,22 +115,51 @@ function formatTime(timestamp) {
 // Update real-time clock
 function updateCurrentTime() {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+        const lang = getLang();
 
-    const timeFormat = window.I18N && window.I18N.timeFormat ? window.I18N.timeFormat : '{y}年{m}月{d}日 {h}:{i}:{s}';
-    const formattedTime = timeFormat
-        .replace('{y}', year)
-        .replace('{m}', month)
-        .replace('{d}', day)
-        .replace('{h}', hours)
-        .replace('{i}', minutes)
-        .replace('{s}', seconds);
-    domCache.currentTime.textContent = formattedTime;
+    let locale;
+    switch (lang) {
+        case 'zh':
+            locale = 'zh-CN';
+            break;
+        case 'ja':
+            locale = 'ja-JP';
+            break;
+        default:
+            locale = 'en-US';
+            break;
+    }
+
+    const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        // Force the Japanese calendar to use the Gregorian system for consistency
+        calendar: 'gregory'
+    };
+
+    try {
+        const formatter = new Intl.DateTimeFormat(locale, options);
+        const formattedTime = formatter.format(now);
+
+        if (domCache.currentTime) {
+            domCache.currentTime.textContent = formattedTime;
+        }
+    } catch (error) {
+        console.error('Failed to format date, falling back to basic format.', error);
+        // Fallback for older browsers
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        domCache.currentTime.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
 }
 
 // Fetch data and render
@@ -136,7 +167,7 @@ async function fetchAndRenderData() {
     try {
                 const urlParams = new URLSearchParams(window.location.search);
         const useMockData = urlParams.get('mock') === 'true';
-        const lang = urlParams.get('lang') || 'en'; // Default to 'en' if no lang is specified
+        const lang = getLang();
         const dataUrl = useMockData ? `api/mock-data?lang=${lang}` : 'api/data';
 
         const response = await fetch(getApiUrl(dataUrl));

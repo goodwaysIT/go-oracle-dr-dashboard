@@ -8,7 +8,7 @@ server:
 # Logging configuration
 logging:
   level: "info"  # debug, info, warn, error, fatal, panic
-  filename: "app.log"
+  filename: "oracle-dr-dashboard.log"
   max_size_mb: 10  # Maximum size of log file in MB before rotation
   max_backups: 5    # Maximum number of old log files to retain
   max_age_days: 30  # Maximum number of days to retain old log files
