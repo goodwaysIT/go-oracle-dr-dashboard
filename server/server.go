@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/goodwaysIT/go-oracle-dr-dashboard/handlers"
-	"github.com/goodwaysIT/go-oracle-dr-dashboard/models"
-	"github.com/goodwaysIT/go-oracle-dr-dashboard/util"
 	"html/template"
 	"io"
 	"io/fs"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/goodwaysIT/go-oracle-dr-dashboard/handlers"
+	"github.com/goodwaysIT/go-oracle-dr-dashboard/models"
+	"github.com/goodwaysIT/go-oracle-dr-dashboard/util"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
@@ -128,6 +129,9 @@ func Run(staticFS, localeFS fs.FS) {
 	// Register i18n middleware
 	router.Use(i18nMiddleware(bundle))
 
+	// Register mock routes if the 'mock' build tag is enabled.
+	registerMockRoutes(router)
+
 	// --- New I18n API Endpoint ---
 	router.GET("/api/i18n/:lang", func(c *gin.Context) {
 		lang := c.Param("lang")
@@ -171,8 +175,8 @@ func Run(staticFS, localeFS fs.FS) {
 
 		// 2. Prepare Frontend Config Script Tag
 		frontendConfig := struct {
-			BasePath string               `json:"basePath"`
-			Layout   models.LayoutConfig   `json:"layout"`
+			BasePath string                  `json:"basePath"`
+			Layout   models.LayoutConfig     `json:"layout"`
 			Frontend models.FrontendSettings `json:"frontend"`
 		}{
 			BasePath: currentConfig.Server.PublicBasePath,
@@ -248,4 +252,4 @@ func Run(staticFS, localeFS fs.FS) {
 	if err != nil {
 		util.Logger.Fatalf("Failed to start server: %v", err)
 	}
-} 
+}

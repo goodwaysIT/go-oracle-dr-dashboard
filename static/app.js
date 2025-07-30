@@ -135,8 +135,12 @@ function updateCurrentTime() {
 // Fetch data and render
 async function fetchAndRenderData() {
     try {
-        const apiUrl = getApiUrl('api/data');
-        const response = await fetch(apiUrl);
+                const urlParams = new URLSearchParams(window.location.search);
+        const useMockData = urlParams.get('mock') === 'true';
+        const lang = urlParams.get('lang') || 'en'; // Default to 'en' if no lang is specified
+        const dataUrl = useMockData ? `api/mock-data?lang=${lang}` : 'api/data';
+
+        const response = await fetch(getApiUrl(dataUrl));
         const result = await response.json();
 
         if (result.code === 200) {

@@ -1,0 +1,89 @@
+# Server configuration
+server:
+  port: "8080"
+  static_dir: "./static"
+  refresh_interval: 30  # seconds
+  public_base_path: "/"  # Base path for reverse proxy setups (e.g., "/monitoring")
+
+# Logging configuration
+logging:
+  level: "info"  # debug, info, warn, error, fatal, panic
+  filename: "app.log"
+  max_size_mb: 10  # Maximum size of log file in MB before rotation
+  max_backups: 5    # Maximum number of old log files to retain
+  max_age_days: 30  # Maximum number of days to retain old log files
+
+# UI titles configuration
+titles:
+  main_title: "Oracle Database DR Monitoring Dashboard"
+  prod_data_center: "Production Data Center"
+  dr_data_center: "Disaster Recovery Data Center"
+
+# Layout configuration
+layout:
+  columns: 3  # Number of database columns to display per data center
+
+# Frontend specific settings
+frontend:
+  load_balancer_ip: "192.168.1.100"  # The IP address to display for the load balancer
+  default_interval_ms: 600000  # Default refresh interval in milliseconds (10 minutes)
+  refresh_intervals:
+    - start_hour: 7    # 7 AM
+      end_hour: 18     # 6 PM (exclusive)
+      interval_ms: 60000  # 1 minute (frequent updates during business hours)
+    - start_hour: 18   # 6 PM
+      end_hour: 20     # 8 PM
+      interval_ms: 120000  # 2 minutes
+    - start_hour: 5    # 5 AM
+      end_hour: 7      # 7 AM
+      interval_ms: 120000  # 2 minutes
+    # Default interval (not in the above ranges) will use default_interval_ms (10 minutes)
+
+# Database configurations
+databases:
+  # Database 1: Primary Production Database
+  - name: "PROD_DB1"
+    lb_ip: "192.168.1.101"
+    prod_ip: "10.0.1.101"
+    dr_ip: "10.1.1.101"
+    port: 1521
+    service_name: "ORCLPDB1"
+    username: "monitor_user"
+    password: "your_secure_password_here"
+
+  # Database 2: Reporting Database
+  - name: "REPORT_DB"
+    lb_ip: "192.168.1.102"
+    prod_ip: "10.0.1.102"
+    dr_ip: "10.1.1.102"
+    port: 1521
+    service_name: "REPORTPDB"
+    username: "monitor_user"
+    password: "your_secure_password_here"
+
+  # Database 3: Development Database
+  - name: "DEV_DB"
+    lb_ip: "192.168.1.103"
+    prod_ip: "10.0.1.103"
+    dr_ip: "10.1.1.103"
+    port: 1521
+    service_name: "DEVPDB"
+    username: "monitor_user"
+    password: "your_secure_password_here"
+
+  # Database 4: Testing Database
+  - name: "TEST_DB"
+    lb_ip: "192.168.1.104"
+    prod_ip: "10.0.1.104"
+    dr_ip: "10.1.1.104"
+    port: 1521
+    service_name: "TESTPDB"
+    username: "monitor_user"
+    password: "your_secure_password_here"
+
+# Note: Make sure to:
+# 1. Replace all placeholder IPs with your actual IP addresses
+# 2. Update service names to match your Oracle service names
+# 3. Replace 'monitor_user' with a read-only monitoring user with appropriate privileges
+# 4. Use strong, unique passwords in production
+# 5. Consider using environment variables or secrets management for sensitive data
