@@ -10,6 +10,16 @@ import (
 	"github.com/goodwaysIT/go-oracle-dr-dashboard/models"
 )
 
+// MockApiResponse is a custom response structure for the mock endpoint,
+// which includes translated titles along with the data.
+type MockApiResponse struct {
+	Code      int                    `json:"code"`
+	Data      []models.DatabaseStatus `json:"data"`
+	Titles    models.TitlesConfig    `json:"titles"`
+	Message   string                 `json:"message"`
+	Timestamp int64                  `json:"timestamp"`
+}
+
 // mockDataHandler generates mock data for 12 databases for screenshots.
 func mockDataHandler(c *gin.Context) {
 	lang := c.DefaultQuery("lang", "en")
@@ -46,9 +56,31 @@ func mockDataHandler(c *gin.Context) {
 		},
 	}
 
+	titleTranslations := map[string]models.TitlesConfig{
+		"en": {
+			MainTitle:      "Tier-1 Business Oracle DR Monitoring Dashboard (Mock)",
+			ProdDataCenter: "Production Data Center",
+			DRDataCenter:   "Disaster Recovery Data Center",
+		},
+		"zh": {
+			MainTitle:      "一级业务Oracle容灾监控大盘 (模拟)",
+			ProdDataCenter: "生产数据中心",
+			DRDataCenter:   "容灾数据中心",
+		},
+		"ja": {
+			MainTitle:      "ティア1ビジネスOracle DR監視ダッシュボード (モック)",
+			ProdDataCenter: "本番データセンター",
+			DRDataCenter:   "災害復旧データセンター",
+		},
+	}
+
 	selectedTrans, ok := trans[lang]
 	if !ok {
 		selectedTrans = trans["en"]
+	}
+	selectedTitles, ok := titleTranslations[lang]
+	if !ok {
+		selectedTitles = titleTranslations["en"]
 	}
 
 	dbNames := []string{
@@ -98,9 +130,10 @@ func mockDataHandler(c *gin.Context) {
 		dbStatuses = append(dbStatuses, status)
 	}
 
-	response := models.ApiResponse{
+	response := MockApiResponse{
 		Code:      200,
 		Data:      dbStatuses,
+		Titles:    selectedTitles,
 		Message:   "Mock data generated successfully",
 		Timestamp: time.Now().Unix(),
 	}

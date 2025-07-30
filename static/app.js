@@ -33,21 +33,20 @@ async function loadTranslations() {
     }
 }
 
-// Function to apply titles from config
-function applyTitles() {
-    const titles = window.APP_TITLES || {};
-    if (titles.main_title) {
-        document.title = titles.main_title;
+// Function to update titles on the page
+function updateTitles(titles) {
+    const newTitles = titles || {};
+    if (newTitles.main_title) {
+        document.title = newTitles.main_title;
         if (domCache.mainTitleH1) {
-            domCache.mainTitleH1.textContent = titles.main_title;
+            domCache.mainTitleH1.textContent = newTitles.main_title;
         }
     }
-    if (domCache.prodDcTitle && titles.prod_data_center) {
-        domCache.prodDcTitle.textContent = titles.prod_data_center;
+    if (domCache.prodDcTitle && newTitles.prod_data_center) {
+        domCache.prodDcTitle.textContent = newTitles.prod_data_center;
     }
-
-    if (domCache.drDcTitle && titles.dr_data_center) {
-        domCache.drDcTitle.textContent = titles.dr_data_center;
+    if (domCache.drDcTitle && newTitles.dr_data_center) {
+        domCache.drDcTitle.textContent = newTitles.dr_data_center;
     }
 }
 
@@ -144,37 +143,56 @@ async function fetchAndRenderData() {
         const result = await response.json();
 
         if (result.code === 200) {
-            // --- Dynamic Layout ---
-            const dbCount = result.data.length;
-            if (dbCount > 4) { // When there are more than 4 databases, apply wide-screen layout
-                domCache.dashboardContainer.classList.add('wide-layout');
-            } else {
-                domCache.dashboardContainer.classList.remove('wide-layout');
+            // If mock data is used and titles are provided, update the UI with them.
+            if (useMockData && result.titles) {
+                updateTitles(result.titles);
             }
-
-            // Clear previous content
-            domCache.productionContainer.innerHTML = '';
-            domCache.disasterContainer.innerHTML = '';
-            domCache.lbSystemList.innerHTML = '';
-
-
-            if (result.data.length > 0) {
-                const ipLabel = window.I18N && window.I18N.lbIpLabel ? window.I18N.lbIpLabel : 'IP';
-                const lbIp = (window.APP_CONFIG && window.APP_CONFIG.frontend && window.APP_CONFIG.frontend.load_balancer_ip) || 'N/A';
-                domCache.lbIpValue.textContent = lbIp;
-                domCache.lbIpLabel.textContent = ipLabel;
-            }
-
-            result.data.forEach(db => {
-                domCache.productionContainer.appendChild(dbCardTemplate(db, 'production'));
-                domCache.disasterContainer.appendChild(dbCardTemplate(db, 'disaster'));
-                domCache.lbSystemList.appendChild(lbItemTemplate(db));
-            });
-
+            render(result.data);
+        } else {
+            showError(result.message || 'Failed to fetch data');
         }
     } catch (error) {
         console.error('Failed to fetch data:', error);
+        showError('Failed to fetch or parse data.');
     }
+}
+
+function render(data) {
+    // --- Dynamic Layout ---
+    const dbCount = data.length;
+    if (dbCount > 4) { // When there are more than 4 databases, apply wide-screen layout
+        domCache.dashboardContainer.classList.add('wide-layout');
+    } else {
+        domCache.dashboardContainer.classList.remove('wide-layout');
+    }
+
+    // Clear previous content
+    domCache.productionContainer.innerHTML = '';
+    domCache.disasterContainer.innerHTML = '';
+    domCache.lbSystemList.innerHTML = '';
+
+    if (data.length > 0) {
+        const ipLabel = window.I18N && window.I18N.lbIpLabel ? window.I18N.lbIpLabel : 'IP';
+        const lbIp = (window.APP_CONFIG && window.APP_CONFIG.frontend && window.APP_CONFIG.frontend.load_balancer_ip) || 'N/A';
+        domCache.lbIpValue.textContent = lbIp;
+        domCache.lbIpLabel.textContent = ipLabel;
+    } else {
+        domCache.lbIpValue.textContent = 'N/A';
+    }
+
+    data.forEach(db => {
+        domCache.productionContainer.appendChild(dbCardTemplate(db, 'production'));
+        domCache.disasterContainer.appendChild(dbCardTemplate(db, 'disaster'));
+        domCache.lbSystemList.appendChild(lbItemTemplate(db));
+    });
+}
+
+function showError(message) {
+    console.error(message);
+    const errorMessage = `<div class="error-message">${t('dataLoadError')}: ${message}</div>`;
+    domCache.productionContainer.innerHTML = errorMessage;
+    domCache.disasterContainer.innerHTML = '';
+    domCache.lbSystemList.innerHTML = '';
 }
 
 // --- Template Functions ---
@@ -356,7 +374,7 @@ async function init() {
     await loadTranslations(); // Load translations first
 
     applyTranslations();
-    applyTitles();
+    updateTitles(window.APP_TITLES);
     applyLayout();
     updateCurrentTime();
     setInterval(updateCurrentTime, 1000);
